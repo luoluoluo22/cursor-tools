@@ -37,6 +37,8 @@ cursor-tools/
   ├── cli-prompt.md       # 命令行工具使用提示词
   ├── api-prompt.md       # API使用提示词
   ├── api-docs.json       # API文档（供AI解析）
+  ├── cloud-tools.md      # 云端工具扩展建议
+  ├── system-prompt.md    # 系统提示词指南
   ├── .env                # 环境变量配置
   ├── .env.example        # 环境变量示例
   ├── render.yaml         # Render部署配置
@@ -81,7 +83,15 @@ node "E:\code\test\cli.js" help
 
 ## Web API 使用
 
-### 启动API服务
+### 云端API地址
+
+该工具集已部署到云端，可以通过以下地址访问API：
+
+```
+https://cursor-tools.onrender.com
+```
+
+### 本地启动API服务
 
 Windows:
 ```
@@ -98,12 +108,12 @@ chmod +x start.sh
 
 获取工具列表:
 ```
-GET http://localhost:3000/api/tools
+GET https://cursor-tools.onrender.com/api/tools
 ```
 
 打开浏览器:
 ```
-POST http://localhost:3000/api/browser
+POST https://cursor-tools.onrender.com/api/browser
 Content-Type: application/json
 
 {
@@ -113,7 +123,7 @@ Content-Type: application/json
 
 显示对话框:
 ```
-POST http://localhost:3000/api/dialog
+POST https://cursor-tools.onrender.com/api/dialog
 Content-Type: application/json
 
 {
@@ -124,7 +134,7 @@ Content-Type: application/json
 
 ### 演示界面
 
-启动API服务后，访问 http://localhost:3000 可以查看并测试API功能。
+访问 https://cursor-tools.onrender.com 可以查看并测试API功能。
 
 ## 部署到云端
 
@@ -147,11 +157,26 @@ Content-Type: application/json
 2. 在 `config/tools.json` 中添加相应的工具配置
 3. 重启应用程序以加载新工具
 
+## 云端工具扩展
+
+文档 [cloud-tools.md](./cloud-tools.md) 提供了适合云端部署的工具扩展建议，包括：
+
+- 网络爬虫/API请求代理
+- 网页截图工具
+- 文件转换工具 
+- 数据存储与检索
+- 图像处理与生成
+- 文本到语音转换
+- 代码执行沙箱
+
+这些工具可以显著增强API的能力，使AI能够执行更多实用任务。
+
 ## AI使用指南
 
 - [命令行使用提示词](./cli-prompt.md) - 适合AI调用命令行工具
 - [API使用提示词](./api-prompt.md) - 适合AI调用Web API
-- [API JSON文档](./api-docs.json) - 结构化JSON格式，便于AI理解和解析
+- [API JSON文档](./api-docs.json) - 结构化JSON格式，便于AI理解和解析  
+- [系统提示词指南](./system-prompt.md) - 提供给AI的完整工具使用说明
 
 ## 许可证
 

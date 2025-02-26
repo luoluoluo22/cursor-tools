@@ -4,7 +4,7 @@ Cursor工具集提供了RESTful API接口，你可以通过HTTP请求远程调�
 
 ## API基本信息
 
-- **基础URL**: `https://cursor-tools-api.onrender.com` (云端部署版本)
+- **基础URL**: `https://cursor-tools.onrender.com` (云端部署版本)
 - **本地测试URL**: `http://localhost:3000` (本地开发版本)
 - **返回格式**: 所有接口均返回JSON格式数据
 
@@ -97,7 +97,7 @@ Content-Type: application/json
 
 ```javascript
 // 打开浏览器
-fetch('https://cursor-tools-api.onrender.com/api/browser', {
+fetch('https://cursor-tools.onrender.com/api/browser', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
@@ -118,7 +118,7 @@ import requests
 
 # 显示对话框
 response = requests.post(
-    'https://cursor-tools-api.onrender.com/api/dialog',
+    'https://cursor-tools.onrender.com/api/dialog',
     json={
         'message': '这是一条测试消息',
         'title': '测试标题'
