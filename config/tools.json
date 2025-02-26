@@ -1,0 +1,57 @@
+{
+  "tools": [
+    {
+      "name": "browser",
+      "description": "打开浏览器并访问指定URL",
+      "path": "./tools/browser.js",
+      "functions": [
+        {
+          "name": "openBrowser",
+          "description": "打开默认浏览器并访问指定URL",
+          "parameters": [
+            {
+              "name": "url",
+              "type": "string",
+              "description": "要访问的URL",
+              "required": true
+            }
+          ],
+          "returns": {
+            "type": "Promise<string>",
+            "description": "执行结果"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dialog",
+      "description": "显示系统对话框",
+      "path": "./tools/dialog.js",
+      "functions": [
+        {
+          "name": "showMessageBox",
+          "description": "显示消息对话框",
+          "parameters": [
+            {
+              "name": "message",
+              "type": "string",
+              "description": "要显示的消息",
+              "required": true
+            },
+            {
+              "name": "title",
+              "type": "string",
+              "description": "对话框标题",
+              "required": false,
+              "default": "消息"
+            }
+          ],
+          "returns": {
+            "type": "Promise<string>",
+            "description": "执行结果"
+          }
+        }
+      ]
+    }
+  ]
+} 

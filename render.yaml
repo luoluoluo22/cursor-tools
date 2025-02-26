@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: cursor-tools-api
+    env: node
+    region: singapore  # 可以选择最靠近你的区域
+    plan: free  # 使用免费套餐
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+    healthCheckPath: / 

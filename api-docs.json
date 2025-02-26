@@ -1,0 +1,176 @@
+{
+  "name": "cursor-tools",
+  "version": "1.0.0",
+  "description": "用于Cursor的本地工具集",
+  "cli": {
+    "description": "命令行接口，可以直接从PowerShell或其他终端使用",
+    "commands": [
+      {
+        "name": "list",
+        "description": "列出所有可用工具",
+        "usage": "node cli.js list",
+        "parameters": []
+      },
+      {
+        "name": "browser",
+        "description": "使用默认浏览器打开指定URL",
+        "usage": "node cli.js browser <url>",
+        "parameters": [
+          {
+            "name": "url",
+            "type": "string",
+            "description": "要访问的URL",
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "dialog",
+        "description": "显示消息对话框",
+        "usage": "node cli.js dialog <message> [title]",
+        "parameters": [
+          {
+            "name": "message",
+            "type": "string",
+            "description": "要显示的消息",
+            "required": true
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "description": "对话框标题",
+            "required": false,
+            "default": "消息"
+          }
+        ]
+      }
+    ]
+  },
+  "toolManager": {
+    "description": "工具管理器，用于加载和管理所有工具",
+    "methods": {
+      "listTools": {
+        "description": "列出所有可用的工具",
+        "parameters": [],
+        "returns": {
+          "type": "string[]",
+          "description": "工具名称列表"
+        }
+      },
+      "getTool": {
+        "description": "获取指定名称的工具",
+        "parameters": [
+          {
+            "name": "toolName",
+            "type": "string",
+            "description": "工具名称",
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "object|null",
+          "description": "工具对象，如果工具不存在则返回null"
+        }
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "browser",
+      "description": "浏览器工具，用于打开系统默认浏览器并访问指定URL",
+      "methods": {
+        "openBrowser": {
+          "description": "打开系统默认浏览器并访问指定URL",
+          "parameters": [
+            {
+              "name": "url",
+              "type": "string",
+              "description": "要访问的URL",
+              "required": true
+            }
+          ],
+          "returns": {
+            "type": "Promise<string>",
+            "description": "执行结果",
+            "possibleResults": [
+              "成功打开浏览器访问: [URL]",
+              "打开浏览器失败: [错误详情]",
+              "打开浏览器错误: [stderr输出]"
+            ]
+          }
+        }
+      },
+      "cli": {
+        "command": "browser",
+        "usage": "node cli.js browser https://www.example.com"
+      }
+    },
+    {
+      "name": "dialog",
+      "description": "对话框工具，用于显示系统消息对话框",
+      "methods": {
+        "showMessageBox": {
+          "description": "显示消息对话框",
+          "parameters": [
+            {
+              "name": "message",
+              "type": "string",
+              "description": "要显示的消息",
+              "required": true
+            },
+            {
+              "name": "title",
+              "type": "string",
+              "description": "对话框标题",
+              "required": false,
+              "default": "消息"
+            }
+          ],
+          "returns": {
+            "type": "Promise<string>",
+            "description": "执行结果",
+            "possibleResults": [
+              "消息框显示成功，用户点击了: 确定",
+              "消息框显示成功，用户点击了: 取消/关闭",
+              "用户关闭了对话框",
+              "显示消息框失败: [错误详情]"
+            ]
+          }
+        }
+      },
+      "cli": {
+        "command": "dialog",
+        "usage": "node cli.js dialog \"这是一条消息\" \"标题\""
+      }
+    }
+  ],
+  "usage": {
+    "api": {
+      "requirePattern": "const path = require('path'); const indexPath = path.resolve(__dirname, 'index.js'); const { toolManager } = require(indexPath);",
+      "callPattern": "const tool = toolManager.getTool('toolName'); if (tool) { await tool.methodName(param1, param2); }",
+      "errorHandling": "使用try/catch或Promise的catch方法捕获错误"
+    },
+    "cli": {
+      "pattern": "node cli.js <command> [parameters...]",
+      "errorHandling": "CLI会自动处理错误并显示适当的错误消息"
+    }
+  },
+  "examples": [
+    {
+      "title": "打开浏览器 (API)",
+      "code": "const browser = toolManager.getTool('browser'); if (browser) { try { await browser.openBrowser('https://www.example.com'); } catch (error) { console.error(error); } }"
+    },
+    {
+      "title": "打开浏览器 (CLI)",
+      "code": "node cli.js browser https://www.example.com"
+    },
+    {
+      "title": "显示对话框 (API)",
+      "code": "const dialog = toolManager.getTool('dialog'); if (dialog) { try { await dialog.showMessageBox('这是一条消息', '标题'); } catch (error) { console.error(error); } }"
+    },
+    {
+      "title": "显示对话框 (CLI)",
+      "code": "node cli.js dialog \"这是一条消息\" \"标题\""
+    }
+  ]
+} 

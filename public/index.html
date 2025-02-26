@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursor工具集API</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .endpoint {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .method {
+            font-weight: bold;
+            display: inline-block;
+            padding: 3px 6px;
+            border-radius: 4px;
+            color: white;
+            margin-right: 10px;
+        }
+        .get {
+            background-color: #3498db;
+        }
+        .post {
+            background-color: #2ecc71;
+        }
+        pre {
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f4f9ff;
+            border-radius: 6px;
+            display: none;
+        }
+        .success {
+            border-left: 5px solid #2ecc71;
+        }
+        .error {
+            border-left: 5px solid #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cursor工具集 API</h1>
+    
+    <div class="card">
+        <h2>API说明</h2>
+        <p>
+            这是Cursor工具集的RESTful API接口。通过这些接口，你可以：
+        </p>
+        <ul>
+            <li>查询可用工具列表</li>
+            <li>在本地环境使用浏览器打开网页</li>
+            <li>在本地环境显示对话框</li>
+        </ul>
+        <p>
+            <strong>注意：</strong>浏览器和对话框功能仅在本地环境运行时有效，在云端环境（如Render）只会模拟操作并返回成功响应。
+        </p>
+    </div>
+    
+    <div class="card">
+        <h2>获取工具列表</h2>
+        <div class="endpoint">
+            <span class="method get">GET</span> /api/tools
+        </div>
+        <p>返回所有可用的工具名称列表。</p>
+        <button onclick="getTools()">测试获取工具列表</button>
+        <div id="toolsResult" class="result"></div>
+    </div>
+    
+    <div class="card">
+        <h2>打开浏览器</h2>
+        <div class="endpoint">
+            <span class="method post">POST</span> /api/browser
+        </div>
+        <p>使用系统默认浏览器打开指定URL（仅本地环境有效）。</p>
+        <label for="browserUrl">URL:</label>
+        <input type="text" id="browserUrl" placeholder="https://www.example.com" value="https://www.baidu.com">
+        <button onclick="openBrowser()">测试打开浏览器</button>
+        <div id="browserResult" class="result"></div>
+    </div>
+    
+    <div class="card">
+        <h2>显示对话框</h2>
+        <div class="endpoint">
+            <span class="method post">POST</span> /api/dialog
+        </div>
+        <p>显示系统对话框（仅本地环境有效）。</p>
+        <label for="dialogMessage">消息:</label>
+        <textarea id="dialogMessage" rows="3" placeholder="这是一条消息">这是一条测试消息</textarea>
+        <label for="dialogTitle">标题:</label>
+        <input type="text" id="dialogTitle" placeholder="标题" value="测试标题">
+        <button onclick="showDialog()">测试显示对话框</button>
+        <div id="dialogResult" class="result"></div>
+    </div>
+
+    <script>
+        const baseUrl = window.location.origin;
+
+        // 获取工具列表
+        async function getTools() {
+            const resultElement = document.getElementById('toolsResult');
+            resultElement.style.display = 'block';
+            try {
+                const response = await fetch(`${baseUrl}/api/tools`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultElement.className = 'result success';
+                    resultElement.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    resultElement.className = 'result error';
+                    resultElement.innerHTML = `<p>错误: ${data.message}</p>`;
+                }
+            } catch (error) {
+                resultElement.className = 'result error';
+                resultElement.innerHTML = `<p>请求错误: ${error.message}</p>`;
+            }
+        }
+
+        // 打开浏览器
+        async function openBrowser() {
+            const resultElement = document.getElementById('browserResult');
+            resultElement.style.display = 'block';
+            
+            const url = document.getElementById('browserUrl').value;
+            if (!url) {
+                resultElement.className = 'result error';
+                resultElement.innerHTML = '<p>请输入URL</p>';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${baseUrl}/api/browser`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultElement.className = 'result success';
+                    resultElement.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    resultElement.className = 'result error';
+                    resultElement.innerHTML = `<p>错误: ${data.message}</p>`;
+                }
+            } catch (error) {
+                resultElement.className = 'result error';
+                resultElement.innerHTML = `<p>请求错误: ${error.message}</p>`;
+            }
+        }
+
+        // 显示对话框
+        async function showDialog() {
+            const resultElement = document.getElementById('dialogResult');
+            resultElement.style.display = 'block';
+            
+            const message = document.getElementById('dialogMessage').value;
+            const title = document.getElementById('dialogTitle').value;
+            
+            if (!message) {
+                resultElement.className = 'result error';
+                resultElement.innerHTML = '<p>请输入消息内容</p>';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${baseUrl}/api/dialog`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message, title })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultElement.className = 'result success';
+                    resultElement.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    resultElement.className = 'result error';
+                    resultElement.innerHTML = `<p>错误: ${data.message}</p>`;
+                }
+            } catch (error) {
+                resultElement.className = 'result error';
+                resultElement.innerHTML = `<p>请求错误: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html> 
